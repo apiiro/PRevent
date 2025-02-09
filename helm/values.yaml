@@ -30,6 +30,14 @@ app:
     fullFindings: false
     webhookPort: 8080
     jwtExpirySeconds: 120
+networkPolicy:
+  enabled: false
+  egressRules:
+    enabled: false
+    allowIpList: []
+  ingressRules:
+    enabled: false
+    allowIpList: []
 externalIngress:
   enabled: false
   gke:

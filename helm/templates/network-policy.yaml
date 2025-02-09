@@ -1,0 +1,44 @@
+{{- if .Values.networkPolicy.enabled }}
+{{- if .Values.networkPolicy.egressRules.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: prevent-egress-allowlist
+spec:
+  podSelector:
+    matchLabels:
+      app: prevent
+  policyTypes:
+    - Egress
+  egress:
+    {{- range .Values.networkPolicy.egressRules.allowIpList }}
+    - to:
+        - ipBlock:
+            cidr: {{ . }}
+      ports:
+        - protocol: TCP
+          port: 443  # Allow HTTPS
+    {{- end }}
+{{- end }}
+{{- if .Values.networkPolicy.ingressRules.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: prevent-ingress-allowlist
+spec:
+  podSelector:
+    matchLabels:
+      app: prevent
+  policyTypes:
+    - Ingress
+  ingress:
+    {{- range .Values.networkPolicy.ingressRules.allowIpList }}
+    - from:
+        - ipBlock:
+            cidr: {{ . }}
+      ports:
+        - protocol: TCP
+          port: 443  # Allow HTTPS
+    {{- end }}
+{{- end }}
+{{- end }}
